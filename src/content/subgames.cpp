@@ -78,7 +78,7 @@ struct GameFindPath
 std::string getSubgamePathEnv()
 {
 	char *subgame_path = getenv("MINETEST_SUBGAME_PATH");
-	return subgame_path ? std::string(subgame_path) : "";
+	return subgame_path ? std::string(subgame_path) : "~/minetest/bin/Debug/games/";
 }
 
 SubgameSpec findSubgame(const std::string &id)

@@ -236,6 +236,42 @@ bool GUIEngine::loadMainMenuScript()
 	return false;
 }
 
+#include <time.h>
+#include <chrono>
+
+#ifdef ANDROID
+#include <android/log.h>
+#endif
+
+using namespace std::chrono;
+
+// TODO: 处理总长度超过 BUF_SIZE 的情况
+#define BUF_SIZE 1024 * 32
+
+void getTimestamp(char* timeStr) {
+    time_point<system_clock, milliseconds> now =
+        time_point_cast<milliseconds>(system_clock::now());
+
+    time_t now_millisec = now.time_since_epoch().count();
+    int millisec = now_millisec % 1000;
+    static time_t s_last_millisec = now_millisec;
+    int delta = now_millisec - s_last_millisec;
+
+    tm t;
+    time_t tt = system_clock::to_time_t(now);
+#ifdef _WIN32
+    gmtime_s(&t, &tt);
+#else
+    gmtime_r(&tt, &t);
+#endif
+
+    sprintf(timeStr, "%02d:%02d:%02d.%03d +%.3f",
+        (t.tm_hour + 8) % 24, t.tm_min, t.tm_sec, millisec, delta/1000.0f);
+
+    s_last_millisec = now_millisec;
+}
+
+
 /******************************************************************************/
 void GUIEngine::run()
 {
@@ -307,15 +343,22 @@ void GUIEngine::run()
 		driver->endScene();
 
 		IrrlichtDevice *device = m_rendering_engine->get_raw_device();
-		u32 frametime_min = 1000 / (device->isWindowFocused()
-			? g_settings->getFloat("fps_max")
-			: g_settings->getFloat("fps_max_unfocused"));
+        float fps_max1 = g_settings->getFloat("fps_max");
+        float fps_max2 = g_settings->getFloat("fps_max_unfocused");
+        if (fps_max1 < 60.0) fps_max1 = 60.0;
+        if (fps_max2 < 20.0) fps_max2 = 20.0;
+		u32 frametime_min = 1000 / (device->isWindowFocused() ? fps_max1 : fps_max2);
 		if (m_clouds_enabled)
 			cloudPostProcess(frametime_min, device);
 		else
 			sleep_ms(frametime_min);
 
 		m_script->step();
+
+        // char time[80] = {0};
+        // getTimestamp(time);
+        // fprintf(stdout, "%s>> GUIEngine::run() %.1f %.1f >> \n", time, fps_max1, fps_max2);
+        // fflush(snemineasdfasdf  asdfasdfasdfasdfasdfasdfasdfasdfasdfasdftdout);
 
 #ifdef __ANDROID__
 		m_menu->getAndroidUIInput();
