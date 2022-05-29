@@ -215,7 +215,7 @@ const std::string Logger::getLevelLabel(LogLevel lev)
 	static const std::string names[] = {
 		"",
 		"ERROR",
-		"WARNING",
+		"WARN",
 		"ACTION",
 		"INFO",
 		"VERBOSE",
@@ -252,7 +252,7 @@ void Logger::log(LogLevel lev, const std::string &text)
 	const std::string label = getLevelLabel(lev);
 	const std::string timestamp = getTimestamp();
 	std::ostringstream os(std::ios_base::binary);
-	os << timestamp << ": " << label << "[" << thread_name << "]: " << text;
+	os << timestamp << "> " << label << "[" << thread_name << "]: " << text;
 
 	logToOutputs(lev, os.str(), timestamp, thread_name, text);
 }

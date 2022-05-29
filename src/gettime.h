@@ -59,6 +59,7 @@ inline std::string getTimestamp()
 {
 	const struct tm tm = mt_localtime();
 	char cs[20]; // YYYY-MM-DD HH:MM:SS + '\0'
-	strftime(cs, 20, "%Y-%m-%d %H:%M:%S", &tm);
+	// strftime(cs, 20, "%Y-%m-%d %H:%M:%S", &tm);
+    sprintf(cs, "%d:%02d:%02d", tm.tm_hour, tm.tm_min, tm.tm_sec);
 	return cs;
 }

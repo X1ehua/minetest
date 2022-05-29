@@ -110,7 +110,6 @@ bool MyEventReceiver::OnEvent(const SEvent &event)
 		return g_menumgr.preprocessEvent(event);
 	}
 
-    printf("EventType: %d\n", event.EventType);
 	// Remember whether each key is down or up
 	if (event.EventType == irr::EET_KEY_INPUT_EVENT) {
 		const KeyPress &keyCode = event.KeyInput;

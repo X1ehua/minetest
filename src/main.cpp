@@ -746,8 +746,8 @@ static bool auto_select_world(GameParams *game_params)
 	// If there is only a single world, use it
 	if (worldspecs.size() == 1) {
 		world_path = worldspecs[0].path;
-		dstream <<_("Automatically selecting world at") << " ["
-		        << world_path << "]" << std::endl;
+		dstream <<_("Auto select world: ")
+		        << world_path << std::endl;
 	// If there are multiple worlds, list them
 	} else if (worldspecs.size() > 1 && game_params->is_dedicated_server) {
 		std::cerr << _("Multiple worlds are available.") << std::endl;

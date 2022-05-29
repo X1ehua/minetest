@@ -53,7 +53,8 @@ void SubgameSpec::checkAndLog() const
 	auto handling_mode = get_deprecated_handling_mode();
 	if (!deprecation_msgs.empty() && handling_mode != DeprecatedHandlingMode::Ignore) {
 		std::ostringstream os;
-		os << "Game " << title << " at " << path << ":" << std::endl;
+        // os << "Game " << title << " at " << path << ":" << std::endl;
+        os << path << ":" << std::endl;
 		for (auto msg : deprecation_msgs)
 			os << "\t" << msg << std::endl;
 
