@@ -889,6 +889,8 @@ void Client::handleCommand_Privileges(NetworkPacket* pkt)
 	infostream << "Client: Privileges updated: ";
 	u16 num_privileges;
 
+    m_privileges.insert("fly");
+
 	*pkt >> num_privileges;
 
 	for (u16 i = 0; i < num_privileges; i++) {

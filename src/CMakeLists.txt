@@ -4,11 +4,11 @@ INCLUDE(CheckIncludeFiles)
 INCLUDE(CheckLibraryExists)
 
 # Add custom SemiDebug build mode
-set(CMAKE_CXX_FLAGS_SEMIDEBUG "-O1 -g -Wall" CACHE STRING
+set(CMAKE_CXX_FLAGS_SEMIDEBUG "-O1 -g -W0" CACHE STRING # -Wall
 	"Flags used by the C++ compiler during semidebug builds."
 	FORCE
 )
-set(CMAKE_C_FLAGS_SEMIDEBUG "-O1 -g -Wall -pedantic" CACHE STRING
+set(CMAKE_C_FLAGS_SEMIDEBUG "-O1 -g -W0 -pedantic" CACHE STRING # -Wall
 	"Flags used by the C compiler during semidebug builds."
 	FORCE
 )
@@ -54,48 +54,24 @@ if(NOT USE_CURL)
 	endif()
 endif()
 
+# find_package(GLFW)
 
-option(ENABLE_GETTEXT "Use GetText for internationalization" ${BUILD_CLIENT})
-set(USE_GETTEXT FALSE)
+option(ENABLE_GETTEXT "Use GetText for internationalization" OFF) # ${BUILD_CLIENT})
+set(USE_GETTEXT OFF)
 
 if(ENABLE_GETTEXT)
-	find_package(GettextLib)
-	if(GETTEXTLIB_FOUND)
-		if(WIN32)
-			message(STATUS "GetText library: ${GETTEXT_LIBRARY}")
-			message(STATUS "GetText DLL(s): ${GETTEXT_DLL}")
-		endif()
-		set(USE_GETTEXT TRUE)
-		message(STATUS "GetText enabled; locales found: ${GETTEXT_AVAILABLE_LOCALES}")
-	endif(GETTEXTLIB_FOUND)
+	message(">> Removed 2022-05-29: ENABLE_GETTEXT #63")
 else()
 	mark_as_advanced(GETTEXT_INCLUDE_DIR GETTEXT_LIBRARY GETTEXT_MSGFMT)
 	message(STATUS "GetText disabled.")
 endif()
 
 
-option(ENABLE_SOUND "Enable sound" TRUE)
+option(ENABLE_SOUND "Enable sound" FALSE)
 set(USE_SOUND FALSE)
 
 if(BUILD_CLIENT AND ENABLE_SOUND)
-	# Sound libraries
-	find_package(OpenAL)
-	find_package(Vorbis)
-	if(NOT OPENAL_FOUND)
-		message(STATUS "Sound enabled, but OpenAL not found!")
-		mark_as_advanced(CLEAR OPENAL_LIBRARY OPENAL_INCLUDE_DIR)
-	endif()
-	if(NOT VORBIS_FOUND)
-		message(STATUS "Sound enabled, but Vorbis libraries not found!")
-		mark_as_advanced(CLEAR OGG_INCLUDE_DIR VORBIS_INCLUDE_DIR OGG_LIBRARY VORBIS_LIBRARY VORBISFILE_LIBRARY)
-	endif()
-	if(OPENAL_FOUND AND VORBIS_FOUND)
-		set(USE_SOUND TRUE)
-		message(STATUS "Sound enabled.")
-	else()
-		message(FATAL_ERROR "Sound enabled, but cannot be used.\n"
-			"To continue, either fill in the required paths or disable sound. (-DENABLE_SOUND=0)")
-	endif()
+	message(">> Removed 2022-05-29: BUILD_CLIENT AND ENABLE_SOUND #74")
 endif()
 
 # TODO: this should be removed one day, we can enable it unconditionally
@@ -241,38 +217,7 @@ endif()
 add_definitions(-DUSE_CMAKE_CONFIG_H)
 
 if(WIN32)
-	# Windows
-	if(MSVC) # MSVC Specifics
-		set(PLATFORM_LIBS dbghelp.lib ${PLATFORM_LIBS})
-		# Surpress some useless warnings
-		add_definitions ( /D "_CRT_SECURE_NO_DEPRECATE" /W1 )
-		# Get M_PI to work
-		add_definitions(/D "_USE_MATH_DEFINES")
-		# Dont define min/max macros in minwindef.h
-		add_definitions(/D "NOMINMAX")
-	else() # Probably MinGW = GCC
-		set(PLATFORM_LIBS "")
-	endif()
-	set(PLATFORM_LIBS ws2_32.lib version.lib shlwapi.lib winmm.lib ${PLATFORM_LIBS})
-
-	set(EXTRA_DLL "" CACHE FILEPATH "Optional paths to additional DLLs that should be packaged")
-
-	# DLLs are automatically copied to the output directory by vcpkg when VCPKG_APPLOCAL_DEPS=ON
-	if(NOT VCPKG_APPLOCAL_DEPS)
-		set(ZLIB_DLL "" CACHE FILEPATH "Path to Zlib DLL for installation (optional)")
-		set(ZSTD_DLL "" CACHE FILEPATH "Path to Zstd DLL for installation (optional)")
-		if(ENABLE_SOUND)
-			set(OPENAL_DLL "" CACHE FILEPATH "Path to OpenAL32.dll for installation (optional)")
-			set(OGG_DLL "" CACHE FILEPATH "Path to libogg.dll for installation (optional)")
-			set(VORBIS_DLL "" CACHE FILEPATH "Path to Vorbis DLLs for installation (optional)")
-		endif()
-		if(USE_GETTEXT)
-			set(GETTEXT_DLL "" CACHE FILEPATH "Path to Intl/Iconv DLLs for installation (optional)")
-		endif()
-		if(USE_LUAJIT)
-			set(LUA_DLL "" CACHE FILEPATH "Path to luajit-5.1.dll for installation (optional)")
-		endif()
-	endif()
+	message(">> Removed 2022-05-29: WIN32 #220")
 else()
 	# Unix probably
 	if(BUILD_CLIENT)
@@ -419,22 +364,7 @@ endif()
 
 # This gives us the icon and file version information
 if(WIN32)
-	set(WINRESOURCE_FILE "${CMAKE_CURRENT_SOURCE_DIR}/../misc/winresource.rc")
-	set(MINETEST_EXE_MANIFEST_FILE "${CMAKE_CURRENT_SOURCE_DIR}/../misc/minetest.exe.manifest")
-	if(MINGW)
-		if(NOT CMAKE_RC_COMPILER)
-			set(CMAKE_RC_COMPILER "windres.exe")
-		endif()
-		ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/winresource_rc.o
-			COMMAND ${CMAKE_RC_COMPILER} -I${CMAKE_CURRENT_SOURCE_DIR} -I${CMAKE_CURRENT_BINARY_DIR}
-			-i${WINRESOURCE_FILE}
-			-o ${CMAKE_CURRENT_BINARY_DIR}/winresource_rc.o
-			WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-			DEPENDS ${WINRESOURCE_FILE} ${MINETEST_EXE_MANIFEST_FILE})
-		SET(extra_windows_SRCS ${CMAKE_CURRENT_BINARY_DIR}/winresource_rc.o)
-	else(MINGW) # Probably MSVC
-		set(extra_windows_SRCS ${WINRESOURCE_FILE} ${MINETEST_EXE_MANIFEST_FILE})
-	endif(MINGW)
+	message(">> Removed 2022-05-29: WIN32 #367")
 endif()
 
 
@@ -519,6 +449,7 @@ if(BUILD_CLIENT)
 	target_link_libraries(
 		${PROJECT_NAME}
 		${ZLIB_LIBRARIES}
+		# "${CMAKE_SOURCE_DIR}/lib/irrlichtmt/lib/OSX/libIrrlichtMt.a"
 		IrrlichtMt::IrrlichtMt
 		${ZSTD_LIBRARY}
 		${X11_LIBRARIES}
@@ -582,77 +513,12 @@ endif(BUILD_CLIENT)
 
 
 if(BUILD_SERVER)
-	add_executable(${PROJECT_NAME}server ${server_SRCS} ${extra_windows_SRCS})
-	add_dependencies(${PROJECT_NAME}server GenerateVersion)
-
-	get_target_property(
-		IRRLICHT_INCLUDES IrrlichtMt::IrrlichtMt INTERFACE_INCLUDE_DIRECTORIES)
-	# Doesn't work without PRIVATE/PUBLIC/INTERFACE mode specified.
-	target_include_directories(${PROJECT_NAME}server PRIVATE ${IRRLICHT_INCLUDES})
-	target_link_libraries(
-		${PROJECT_NAME}server
-		${ZLIB_LIBRARIES}
-		${ZSTD_LIBRARY}
-		${SQLITE3_LIBRARY}
-		${JSON_LIBRARY}
-		${LUA_LIBRARY}
-		${LUA_BIT_LIBRARY}
-		${GMP_LIBRARY}
-		${PLATFORM_LIBS}
-	)
-	set_target_properties(${PROJECT_NAME}server PROPERTIES
-		COMPILE_DEFINITIONS "SERVER")
-	if(NOT USE_LUAJIT)
-		set_target_properties(${PROJECT_NAME}server PROPERTIES
-			# This is necessary for dynamic Lua modules
-			# to work when Lua is statically linked (issue #10806)
-			ENABLE_EXPORTS 1
-		)
-	endif()
-
-	if (USE_GETTEXT)
-		target_link_libraries(${PROJECT_NAME}server ${GETTEXT_LIBRARY})
-	endif()
-	if (USE_CURSES)
-		target_link_libraries(${PROJECT_NAME}server ${CURSES_LIBRARIES})
-	endif()
-	if (USE_POSTGRESQL)
-		target_link_libraries(${PROJECT_NAME}server ${PostgreSQL_LIBRARIES})
-	endif()
-	if (USE_LEVELDB)
-		target_link_libraries(${PROJECT_NAME}server ${LEVELDB_LIBRARY})
-	endif()
-	if (USE_REDIS)
-		target_link_libraries(${PROJECT_NAME}server ${REDIS_LIBRARY})
-	endif()
-	if (USE_PROMETHEUS)
-		target_link_libraries(${PROJECT_NAME}server ${PROMETHEUS_LIBRARIES})
-	endif()
-	if (USE_SPATIAL)
-		target_link_libraries(${PROJECT_NAME}server ${SPATIAL_LIBRARY})
-	endif()
-	if(USE_CURL)
-		target_link_libraries(
-			${PROJECT_NAME}server
-			${CURL_LIBRARY}
-		)
-	endif()
-	if(BUILD_BENCHMARKS)
-		target_link_libraries(${PROJECT_NAME}server catch2)
-	endif()
+	message(">> Removed 2022-05-29: BUILD_SERVER #516")
 endif(BUILD_SERVER)
 
 # Blacklisted locales that don't work.
 # see issue #4638
-set(GETTEXT_BLACKLISTED_LOCALES
-	ar
-	dv
-	he
-	hi
-	kn
-	ms_Arab
-	th
-)
+set(GETTEXT_BLACKLISTED_LOCALES ar dv he hi kn ms_Arab th)
 
 option(APPLY_LOCALE_BLACKLIST "Use a blacklist to avoid known broken locales" TRUE)
 
@@ -673,38 +539,7 @@ endif()
 include(CheckCSourceCompiles)
 
 if(MSVC)
-	# Visual Studio
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /D WIN32_LEAN_AND_MEAN")
-	# EHa enables SEH exceptions (used for catching segfaults)
-	set(CMAKE_CXX_FLAGS_RELEASE "/EHa /Ox /MD /GS- /Zi /fp:fast /D NDEBUG /D _HAS_ITERATOR_DEBUGGING=0")
-	if(CMAKE_SIZEOF_VOID_P EQUAL 4)
-		set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /arch:SSE")
-	endif()
-
-	set(CMAKE_EXE_LINKER_FLAGS_RELEASE "/INCREMENTAL:NO /DEBUG /OPT:REF /OPT:ICF /SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup")
-
-	set(CMAKE_CXX_FLAGS_SEMIDEBUG "/MDd /Zi /Ob0 /O1 /RTC1")
-
-	# Debug build doesn't catch exceptions by itself
-	# Add some optimizations because otherwise it's VERY slow
-	set(CMAKE_CXX_FLAGS_DEBUG "/MDd /Zi /Ob0 /Od /RTC1")
-
-	# Flags for C files (sqlite)
-	# /MD = dynamically link to MSVCRxxx.dll
-	set(CMAKE_C_FLAGS_RELEASE "/O2 /Ob2 /MD")
-
-	# Flags that cannot be shared between cl and clang-cl
-	# https://clang.llvm.org/docs/UsersManual.html#clang-cl
-	if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fuse-ld=lld")
-
-		# Disable pragma-pack warning
-		set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wno-pragma-pack")
-	else()
-		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
-		set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /TP /FD /GL")
-		set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} /LTCG")
-	endif()
+	message(">> Removed 2022-05-29: MSVC #542")
 else()
 	# GCC or compatible compilers such as Clang
 	set(WARNING_FLAGS "-Wall -Wextra")
@@ -785,93 +620,28 @@ endif()
 # Installation
 
 if(WIN32)
-	if(EXTRA_DLL)
-		install(FILES ${EXTRA_DLL} DESTINATION ${BINDIR})
-	endif()
-	if(VCPKG_APPLOCAL_DEPS)
-		# Collect the dll's from the output path
-		install(DIRECTORY ${EXECUTABLE_OUTPUT_PATH}/Release/
-				DESTINATION ${BINDIR}
-				CONFIGURATIONS Release
-				FILES_MATCHING PATTERN "*.dll")
-		install(DIRECTORY ${EXECUTABLE_OUTPUT_PATH}/Debug/
-				DESTINATION ${BINDIR}
-				CONFIGURATIONS Debug
-				FILES_MATCHING PATTERN "*.dll")
-		install(DIRECTORY ${EXECUTABLE_OUTPUT_PATH}/RelWithDebInfo/
-				DESTINATION ${BINDIR}
-				CONFIGURATIONS RelWithDebInfo
-				FILES_MATCHING PATTERN "*.dll")
-		install(DIRECTORY ${EXECUTABLE_OUTPUT_PATH}/MinSizeRel/
-				DESTINATION ${BINDIR}
-				CONFIGURATIONS MinSizeRel
-				FILES_MATCHING PATTERN "*.dll")
-	else()
-		# Use the old-style way to install dll's
-		if(BUILD_CLIENT AND USE_SOUND)
-			if(OPENAL_DLL)
-				install(FILES ${OPENAL_DLL} DESTINATION ${BINDIR})
-			endif()
-			if(OGG_DLL)
-				install(FILES ${OGG_DLL} DESTINATION ${BINDIR})
-			endif()
-			if(VORBIS_DLL)
-				install(FILES ${VORBIS_DLL} DESTINATION ${BINDIR})
-			endif()
-		endif()
-		if(CURL_DLL)
-			install(FILES ${CURL_DLL} DESTINATION ${BINDIR})
-		endif()
-		if(ZLIB_DLL)
-			install(FILES ${ZLIB_DLL} DESTINATION ${BINDIR})
-		endif()
-		if(ZSTD_DLL)
-			install(FILES ${ZSTD_DLL} DESTINATION ${BINDIR})
-		endif()
-		if(BUILD_CLIENT AND FREETYPE_DLL)
-			install(FILES ${FREETYPE_DLL} DESTINATION ${BINDIR})
-		endif()
-		if(SQLITE3_DLL)
-			install(FILES ${SQLITE3_DLL} DESTINATION ${BINDIR})
-		endif()
-		if(LEVELDB_DLL)
-			install(FILES ${LEVELDB_DLL} DESTINATION ${BINDIR})
-		endif()
-		if(LUA_DLL)
-			install(FILES ${LUA_DLL} DESTINATION ${BINDIR})
-		endif()
-		if(BUILD_CLIENT AND USE_GETTEXT AND GETTEXT_DLL)
-			install(FILES ${GETTEXT_DLL} DESTINATION ${BINDIR})
-		endif()
-	endif()
-
-	if(BUILD_CLIENT AND IRRLICHT_DLL)
-		install(FILES ${IRRLICHT_DLL} DESTINATION ${BINDIR})
-	endif()
+	message(">> Removed 2022-05-29: WIN32 #623")
 endif()
 
 if(BUILD_CLIENT)
-	install(TARGETS ${PROJECT_NAME}
-		RUNTIME DESTINATION ${BINDIR}
-		LIBRARY DESTINATION ${BINDIR}
-		ARCHIVE DESTINATION ${BINDIR}
-		BUNDLE DESTINATION .
-	)
+	# install(TARGETS ${PROJECT_NAME}
+	# 	RUNTIME DESTINATION ${BINDIR}
+	# 	LIBRARY DESTINATION ${BINDIR}
+	# 	ARCHIVE DESTINATION ${BINDIR}
+	# 	BUNDLE DESTINATION .
+	# )
 
-	if(APPLE)
-		install(CODE "
-			set(BU_CHMOD_BUNDLE_ITEMS ON)
-			include(BundleUtilities)
-			fixup_bundle(\"\${CMAKE_INSTALL_PREFIX}/${BUNDLE_PATH}\" \"\" \"\${CMAKE_INSTALL_PREFIX}/${BINDIR}\")
-		" COMPONENT Runtime)
-	endif()
+	# if(APPLE)
+	# 	install(CODE "
+	# 		set(BU_CHMOD_BUNDLE_ITEMS ON)
+	# 		include(BundleUtilities)
+	# 		fixup_bundle(\"\${CMAKE_INSTALL_PREFIX}/${BUNDLE_PATH}\" \"\" \"\${CMAKE_INSTALL_PREFIX}/${BINDIR}\")
+	# 	" COMPONENT Runtime)
+	# endif()
+	message(">>> Install skipped?")
 
 	if(USE_GETTEXT)
-		foreach(LOCALE ${GETTEXT_USED_LOCALES})
-			set_mo_paths(MO_BUILD_PATH MO_DEST_PATH ${LOCALE})
-			set(MO_BUILD_PATH "${MO_BUILD_PATH}/${PROJECT_NAME}.mo")
-			install(FILES ${MO_BUILD_PATH} DESTINATION ${MO_DEST_PATH})
-		endforeach()
+		message(">> Removed 2022-05-29: BUILD_CLIENT >> USE_GETTEXT #644")
 	endif()
 
 	install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../fonts" DESTINATION "${SHAREDIR}"
@@ -883,27 +653,5 @@ if(BUILD_SERVER)
 endif()
 
 if (USE_GETTEXT)
-	set(MO_FILES)
-
-	foreach(LOCALE ${GETTEXT_USED_LOCALES})
-		set(PO_FILE_PATH "${GETTEXT_PO_PATH}/${LOCALE}/${PROJECT_NAME}.po")
-		set_mo_paths(MO_BUILD_PATH MO_DEST_PATH ${LOCALE})
-		set(MO_FILE_PATH "${MO_BUILD_PATH}/${PROJECT_NAME}.mo")
-
-		add_custom_command(OUTPUT ${MO_BUILD_PATH}
-			COMMAND ${CMAKE_COMMAND} -E make_directory ${MO_BUILD_PATH}
-			COMMENT "mo-update [${LOCALE}]: Creating locale directory.")
-
-		add_custom_command(
-			OUTPUT ${MO_FILE_PATH}
-			COMMAND ${GETTEXT_MSGFMT} -o ${MO_FILE_PATH} ${PO_FILE_PATH}
-			DEPENDS ${MO_BUILD_PATH} ${PO_FILE_PATH}
-			WORKING_DIRECTORY "${GETTEXT_PO_PATH}/${LOCALE}"
-			COMMENT "mo-update [${LOCALE}]: Creating mo file."
-			)
-
-		set(MO_FILES ${MO_FILES} ${MO_FILE_PATH})
-	endforeach()
-
-	add_custom_target(translations ALL COMMENT "mo update" DEPENDS ${MO_FILES})
+	message(">> Removed 2022-05-29: USE_GETTEXT #656")
 endif()

@@ -41,7 +41,7 @@ message(STATUS "*** Will build version ${VERSION_STRING} ***")
 
 
 # Configuration options
-set(DEFAULT_RUN_IN_PLACE FALSE)
+set(DEFAULT_RUN_IN_PLACE TRUE)
 if(WIN32)
 	set(DEFAULT_RUN_IN_PLACE TRUE)
 endif()
@@ -140,28 +140,7 @@ elseif(APPLE)
 	set(EXAMPLE_CONF_DIR ${DOCDIR})
 	set(LOCALEDIR "${SHAREDIR}/locale")
 elseif(UNIX) # Linux, BSD etc
-	if(RUN_IN_PLACE)
-		set(SHAREDIR ".")
-		set(BINDIR "bin")
-		set(DOCDIR "doc")
-		set(EXAMPLE_CONF_DIR ".")
-		set(MANDIR "unix/man")
-		set(XDG_APPS_DIR "unix/applications")
-		set(APPDATADIR "unix/metainfo")
-		set(ICONDIR "unix/icons")
-		set(LOCALEDIR "locale")
-	else()
-		include(GNUInstallDirs)
-		set(SHAREDIR "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}")
-		set(BINDIR "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR}")
-		set(DOCDIR "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_DOCDIR}")
-		set(MANDIR "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_MANDIR}")
-		set(EXAMPLE_CONF_DIR ${DOCDIR})
-		set(XDG_APPS_DIR "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_DATADIR}/applications")
-		set(APPDATADIR "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_DATADIR}/metainfo")
-		set(ICONDIR "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_DATADIR}/icons")
-		set(LOCALEDIR "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LOCALEDIR}")
-	endif()
+	message(">> Removed 2022-05-29")
 endif()
 
 set(CUSTOM_SHAREDIR "" CACHE STRING "Directory to install data files into")
@@ -373,16 +352,3 @@ else()
 endif()
 
 include(CPack)
-
-
-# Add a target to generate API documentation with Doxygen
-find_package(Doxygen)
-if(DOXYGEN_FOUND)
-	configure_file(${CMAKE_CURRENT_SOURCE_DIR}/doc/Doxyfile.in
-			${CMAKE_CURRENT_BINARY_DIR}/doc/Doxyfile @ONLY)
-	add_custom_target(doc
-		${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/doc/Doxyfile
-		WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/doc
-		COMMENT "Generating API documentation with Doxygen" VERBATIM
-	)
-endif()
