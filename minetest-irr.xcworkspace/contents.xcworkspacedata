@@ -5,6 +5,6 @@
       location = "group:build/minetest.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:lib/irrlichtmt/Irrlicht.xcodeproj">
+      location = "group:lib/irrlichtmt/source/Irrlicht/Irrlicht.xcodeproj">
    </FileRef>
 </Workspace>

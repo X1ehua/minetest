@@ -23,7 +23,7 @@ set(CMAKE_BUILD_TYPE "${CMAKE_BUILD_TYPE}" CACHE STRING
 
 
 # Set some random things default to not being visible in the GUI
-mark_as_advanced(EXECUTABLE_OUTPUT_PATH LIBRARY_OUTPUT_PATH)
+# mark_as_advanced(EXECUTABLE_OUTPUT_PATH LIBRARY_OUTPUT_PATH)
 
 
 if(NOT (BUILD_CLIENT OR BUILD_SERVER))
@@ -264,7 +264,8 @@ add_custom_target(GenerateVersion
 	-D "VERSION_STRING=${VERSION_STRING}"
 	-D "DEVELOPMENT_BUILD=${DEVELOPMENT_BUILD}"
 	-P "${CMAKE_SOURCE_DIR}/cmake/Modules/GenerateVersion.cmake"
-	WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}")
+	WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+)
 
 
 add_subdirectory(threading)
@@ -436,14 +437,24 @@ if(USE_CURL)
 	include_directories(${CURL_INCLUDE_DIR})
 endif()
 
+# message(">> MT_ROOT_DIR: ${MT_ROOT_DIR}")
+include_directories(
+	${MT_ROOT_DIR}/lib/irrlichtmt/include
+	${MT_ROOT_DIR}/lib/irrlichtmt/source/Irrlicht
+)
 
 # When cross-compiling assume the user doesn't want to run the executable anyway,
 # otherwise place it in <source dir>/bin/ since Minetest can only run from there.
 if(NOT CMAKE_CROSSCOMPILING)
-	set(EXECUTABLE_OUTPUT_PATH "${CMAKE_SOURCE_DIR}/bin")
+	set(CMAKE_CURRENT_BINARY_DIR ${CMAKE_INSTALL_PREFIX}/${BINDIR})
+	set(EXECUTABLE_OUTPUT_PATH "${CMAKE_CURRENT_BINARY_DIR}")
+	# message(">> CMAKE_CURRENT_BINARY_DIR: ${CMAKE_CURRENT_BINARY_DIR} #451")
+	# message(">> EXECUTABLE_OUTPUT_PATH: ${EXECUTABLE_OUTPUT_PATH}")
 endif()
 
+message(">> CMAKE_XCODE_SCHEME_WORKING_DIRECTORY: ${CMAKE_XCODE_SCHEME_WORKING_DIRECTORY}")
 if(BUILD_CLIENT)
+	set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 	add_executable(${PROJECT_NAME} ${client_SRCS} ${extra_windows_SRCS})
 	add_dependencies(${PROJECT_NAME} GenerateVersion)
 	target_link_libraries(
@@ -511,6 +522,12 @@ if(BUILD_CLIENT)
 	endif()
 endif(BUILD_CLIENT)
 
+# set_target_properties(${PROJECT_NAME}
+#     PROPERTIES
+#     # ARCHIVE_OUTPUT_DIRECTORY "/home/xy/cmake_practice/lib/"
+#     # LIBRARY_OUTPUT_DIRECTORY "/home/xy/cmake_practice/lib/"
+#     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+# )
 
 if(BUILD_SERVER)
 	message(">> Removed 2022-05-29: BUILD_SERVER #516")
@@ -624,33 +641,43 @@ if(WIN32)
 endif()
 
 if(BUILD_CLIENT)
+	# 下面全部注释掉似乎没有影响?
+
+	# https://cmake.org/cmake/help/latest/command/install.html#targets
 	# install(TARGETS ${PROJECT_NAME}
-	# 	RUNTIME DESTINATION ${BINDIR}
-	# 	LIBRARY DESTINATION ${BINDIR}
-	# 	ARCHIVE DESTINATION ${BINDIR}
+	# 	RUNTIME DESTINATION ${BINDIR} # .dll on Windows
+	# 	LIBRARY DESTINATION ${BINDIR} # shared libs, except DLL & on macOS ma
+	# 	ARCHIVE DESTINATION ${BINDIR} # .lib on Windows, 相比之下 macOS .a 使用 FRAMEWORK
 	# 	BUNDLE DESTINATION .
 	# )
 
-	# if(APPLE)
-	# 	install(CODE "
-	# 		set(BU_CHMOD_BUNDLE_ITEMS ON)
-	# 		include(BundleUtilities)
-	# 		fixup_bundle(\"\${CMAKE_INSTALL_PREFIX}/${BUNDLE_PATH}\" \"\" \"\${CMAKE_INSTALL_PREFIX}/${BINDIR}\")
-	# 	" COMPONENT Runtime)
-	# endif()
-	message(">>> Install skipped?")
+	# message(">> CMAKE_CURRENT_BINARY_DIR: ${CMAKE_CURRENT_BINARY_DIR}")
+	if(APPLE)
+		# CMAKE_INSTALL_PREFIX: default /usr/local, set to /opt/homebrew/Cellar/minetest/5.5.0 in ../CMakeLists.txt
+		# BUNDLE_PATH: minetest.app
+		# message(">> CMAKE_INSTALL_PREFIX/BUNDLE_PATH: ${CMAKE_INSTALL_PREFIX} / ${BUNDLE_PATH}")
+		# BINDIR: minetest.app/Contents/MacOS
+		# message(">> CMAKE_INSTALL_PREFIX/BINDIR: ${CMAKE_INSTALL_PREFIX} / ${BINDIR}")
+
+		# install(CODE "
+		# 	set(BU_CHMOD_BUNDLE_ITEMS ON)
+		# 	include(BundleUtilities)
+		# 	fixup_bundle(\"\${CMAKE_INSTALL_PREFIX}/${BUNDLE_PATH}\" \"\" \"\${CMAKE_INSTALL_PREFIX}/${BINDIR}\")
+		# " COMPONENT Runtime)
+	endif()
+	# message(">> Installation Skipped!")
 
 	if(USE_GETTEXT)
 		message(">> Removed 2022-05-29: BUILD_CLIENT >> USE_GETTEXT #644")
 	endif()
 
-	install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../fonts" DESTINATION "${SHAREDIR}"
-			FILES_MATCHING PATTERN "*.ttf" PATTERN "*.txt")
+	# install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../fonts" DESTINATION "${SHAREDIR}"
+	# 		FILES_MATCHING PATTERN "*.ttf" PATTERN "*.txt")
 endif(BUILD_CLIENT)
 
-if(BUILD_SERVER)
-	install(TARGETS ${PROJECT_NAME}server DESTINATION ${BINDIR})
-endif()
+# if(BUILD_SERVER)
+#	install(TARGETS ${PROJECT_NAME}server DESTINATION ${BINDIR})
+# endif()
 
 if (USE_GETTEXT)
 	message(">> Removed 2022-05-29: USE_GETTEXT #656")
