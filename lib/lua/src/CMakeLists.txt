@@ -42,3 +42,5 @@ set_target_properties(lua PROPERTIES
 
 # Compile code as C++
 set_source_files_properties(${LUA_CORE_SRC} PROPERTIES LANGUAGE CXX)
+
+set_target_properties(lua PROPERTIES FOLDER 3rd)

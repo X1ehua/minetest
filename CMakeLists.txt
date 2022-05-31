@@ -11,7 +11,7 @@ endif()
 project(minetest)
 set(PROJECT_NAME_CAPITALIZED "Minetest")
 
-set(MT_ROOT_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
+set(MINETEST_ROOT_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
 
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
@@ -23,6 +23,8 @@ set(VERSION_MAJOR 5)
 set(VERSION_MINOR 6)
 set(VERSION_PATCH 0)
 set(VERSION_EXTRA "" CACHE STRING "Stuff to append to version string")
+
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 # Change to false for releases
 set(DEVELOPMENT_BUILD TRUE)
