@@ -196,8 +196,8 @@ add_subdirectory(gui)
 add_subdirectory(mapgen)
 add_subdirectory(network)
 add_subdirectory(script)
-add_subdirectory(unittest)
-add_subdirectory(benchmark)
+# add_subdirectory(unittest)
+# add_subdirectory(benchmark)
 add_subdirectory(util)
 add_subdirectory(irrlicht_changes)
 add_subdirectory(server)
@@ -367,15 +367,17 @@ include_directories(
 # When cross-compiling assume the user doesn't want to run the executable anyway,
 # otherwise place it in <source dir>/bin/ since Minetest can only run from there.
 if(NOT CMAKE_CROSSCOMPILING)
-	set(CMAKE_CURRENT_BINARY_DIR ${CMAKE_INSTALL_PREFIX}/${BINDIR})
-	set(EXECUTABLE_OUTPUT_PATH "${CMAKE_CURRENT_BINARY_DIR}")
-	# message(">> CMAKE_CURRENT_BINARY_DIR: ${CMAKE_CURRENT_BINARY_DIR} #451")
+	# set(CMAKE_CURRENT_BINARY_DIR ${CMAKE_INSTALL_PREFIX}/${BINDIR})
+	set(EXECUTABLE_OUTPUT_PATH "${CMAKE_SOURCE_DIR}/bin")
 	# message(">> EXECUTABLE_OUTPUT_PATH: ${EXECUTABLE_OUTPUT_PATH}")
 endif()
 
 message(">> CMAKE_XCODE_SCHEME_WORKING_DIRECTORY: ${CMAKE_XCODE_SCHEME_WORKING_DIRECTORY}")
 if(BUILD_CLIENT)
-	set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+	# set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${EXECUTABLE_OUTPUT_PATH})
+	message(">> EXECUTABLE_OUTPUT_PATH: ${EXECUTABLE_OUTPUT_PATH}")
+	# CMAKE_RUNTIME_OUTPUT_DIRECTORY 决定着 execute-file 的 path
+	message(">> CMAKE_RUNTIME_OUTPUT_DIRECTORY: ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
 	add_executable(${PROJECT_NAME} ${client_SRCS} ${extra_windows_SRCS})
 	add_dependencies(${PROJECT_NAME} GenerateVersion)
 	target_link_libraries(
