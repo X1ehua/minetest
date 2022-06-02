@@ -358,10 +358,10 @@ if(USE_CURL)
 	include_directories(${CURL_INCLUDE_DIR})
 endif()
 
-# message(">> MINETEST_ROOT_DIR: ${MINETEST_ROOT_DIR}")
+# message(">> PARENT_APP_ROOT_DIR: ${PARENT_APP_ROOT_DIR}")
 include_directories(
-	${MINETEST_ROOT_DIR}/lib/irrlichtmt/include
-	${MINETEST_ROOT_DIR}/lib/irrlichtmt/source/Irrlicht
+	${PARENT_APP_ROOT_DIR}/lib/irrlichtmt/include
+	${PARENT_APP_ROOT_DIR}/lib/irrlichtmt/source/Irrlicht
 )
 
 # When cross-compiling assume the user doesn't want to run the executable anyway,
