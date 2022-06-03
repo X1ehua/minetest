@@ -2414,8 +2414,8 @@ void Game::updateCameraDirection(CameraOrientation *cam, float dtime)
 #ifndef __ANDROID__
 		if (!input->isRandom()) {
 			// Mac OSX gets upset if this is set every frame
-			if (device->getCursorControl()->isVisible())
-				device->getCursorControl()->setVisible(false);
+            // if (device->getCursorControl()->isVisible())
+                // device->getCursorControl()->setVisible(false);
 		}
 #endif
 
