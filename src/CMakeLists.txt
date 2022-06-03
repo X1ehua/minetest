@@ -295,7 +295,13 @@ if (BUILD_CLIENT)
 	add_subdirectory(client)
 endif(BUILD_CLIENT)
 
+file(GLOB client_INCS
+	"${PARENT_APP_ROOT_DIR}/src/client/*.h"
+	"${PARENT_APP_ROOT_DIR}/src/client/**/*.h"
+)
+
 set(client_SRCS
+	${client_INCS}
 	${client_SRCS}
 	${common_SRCS}
 	${gui_SRCS}

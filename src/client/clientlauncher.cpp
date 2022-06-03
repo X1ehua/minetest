@@ -101,6 +101,7 @@ bool ClientLauncher::run(GameStartData &start_data, const Settings &cmd_args)
 		g_sound_manager_singleton = createSoundManagerSingleton();
 #endif
 
+    // init_engine() >> RenderingEngine::ctro() 里面 createDevice()
 	if (!init_engine()) {
 		errorstream << "Could not initialize game engine." << std::endl;
 		return false;
