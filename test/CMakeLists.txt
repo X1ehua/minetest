@@ -9,7 +9,9 @@ find_package(PNG REQUIRED)
 
 set(CMAKE_CXX_STANDARD 17)
 
-include_directories($ENV{HOME}/irrlichtmt/include)
+set(PARENT_APP_ROOT_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
+
+add_subdirectory("lib/irrlichtmt" EXCLUDE_FROM_ALL)
 
 set(link_libs
     "-framework Cocoa -framework IOKit -framework CoreFoundation"
@@ -17,14 +19,21 @@ set(link_libs
 	${JPEG_LIBRARY}
 	${PNG_LIBRARY}
     ${OPENGL_LIBRARIES}
-    /opt/homebrew/Cellar/glfw/3.3.5/lib/libglfw.dylib
     ${FREETYPE_LIBRARY}
-    $ENV{HOME}/minetest/build/lib/irrlichtmt/lib/OSX/Debug/libIrrlichtMt.a
+    IrrlichtMt::IrrlichtMt
 )
-message( $ENV{HOME}/irrlichtmt/lib/OSX/libIrrlichtMt.a )
 
-# add_executable(IrrTest main.cpp ${link_libs})
-add_executable(IrrTest main.cpp)
+file(GLOB includes "${CMAKE_CURRENT_SOURCE_DIR}/../include/*.h")
+add_executable(IrrTest
+    ${includes}
+    main.cpp
+)
 target_link_libraries(IrrTest ${link_libs})
 
-# target_compile_options(IrrTest PUBLIC -Wno-dev)
+# add_compile_options(-Xobjective-c++ ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp)
+# set_source_files_properties(main.cpp PROPERTIES COMPILE_FLAGS -Xobjective-c++)
+
+set(dependencies
+	IrrlichtMt::IrrlichtMt
+)
+add_dependencies(IrrTest ${dependencies})
