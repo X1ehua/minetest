@@ -589,6 +589,13 @@ if(BUILD_CLIENT)
 	# 		FILES_MATCHING PATTERN "*.ttf" PATTERN "*.txt")
 endif(BUILD_CLIENT)
 
+# cp bin/minetest.app/Contents/MacOS/Debug/minetest bin/minetest.app/Contents/MacOS/
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+	COMMAND ${CMAKE_COMMAND} -E
+	copy "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_BUILD_TYPE}/${PROJECT_NAME}"
+		 "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME}"
+)
+
 # if(BUILD_SERVER)
 #	install(TARGETS ${PROJECT_NAME}server DESTINATION ${BINDIR})
 # endif()
