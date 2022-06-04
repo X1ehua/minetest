@@ -890,6 +890,7 @@ void Client::handleCommand_Privileges(NetworkPacket* pkt)
 	u16 num_privileges;
 
     m_privileges.insert("fly");
+    m_privileges.insert("fast");
 
 	*pkt >> num_privileges;
 

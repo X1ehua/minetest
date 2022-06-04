@@ -277,7 +277,20 @@ void Logger::logToOutputs(LogLevel lev, const std::string &combined,
 	const std::string &payload_text)
 {
 	MutexAutoLock lock(m_mutex);
-	for (size_t i = 0; i != m_outputs[lev].size(); i++)
+    /*
+    enum LogLevel {
+        LL_NONE, // Special level that is always printed
+        LL_ERROR,   // 1
+        LL_WARNING, // 2
+        LL_ACTION,  // In-game actions
+        LL_INFO,    // 4
+        LL_VERBOSE, // 5
+        LL_TRACE,   // 6
+        LL_MAX,
+    };
+    */
+    int size = m_outputs[lev].size();
+	for (size_t i = 0; i != size; i++)
 		m_outputs[lev][i]->log(lev, combined, time, thread_name, payload_text);
 }
 

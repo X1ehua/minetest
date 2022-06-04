@@ -2468,9 +2468,23 @@ void Game::updateCameraOrientation(CameraOrientation *cam, float dtime)
 			dist.Y = -dist.Y;
 		}
 
+        // static int _X = 0;
+        // static int _Y = 0;
+        // if (dist.X == _X && dist.Y == _Y) {
+        //     return;
+        // }
+        // _X = dist.X, _Y = dist.Y;
+
 		f32 sens_scale = getSensitivityScaleFactor();
 		cam->camera_yaw   -= dist.X * m_cache_mouse_sensitivity * sens_scale;
 		cam->camera_pitch += dist.Y * m_cache_mouse_sensitivity * sens_scale;
+        // printf(">> camera_yaw %s #%d\n", __FILE__, __LINE__);
+        // if (dist.X || dist.Y) {
+        //     printf("Yaw %.2f Pitch %.2f, XY %d %d\n",
+        //            dist.X * m_cache_mouse_sensitivity * sens_scale,
+        //            dist.Y * m_cache_mouse_sensitivity * sens_scale,
+        //            dist.X, dist.Y);
+        // }
 
 		if (dist.X != 0 || dist.Y != 0)
 			input->setMousePos(center.X, center.Y);
@@ -2483,6 +2497,7 @@ void Game::updateCameraOrientation(CameraOrientation *cam, float dtime)
 		f32 c = m_cache_joystick_frustum_sensitivity * dtime * sens_scale;
 		cam->camera_yaw -= input->joystick.getAxisWithoutDead(JA_FRUSTUM_HORIZONTAL) * c;
 		cam->camera_pitch += input->joystick.getAxisWithoutDead(JA_FRUSTUM_VERTICAL) * c;
+        printf(">> camera_yaw %s #%d\n", __FILE__, __LINE__);
 	}
 
 	cam->camera_pitch = rangelim(cam->camera_pitch, -89.5, 89.5);

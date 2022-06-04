@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
 project(IrrTest)
 
-find_package(OpenGL REQUIRED)
+# find_package(OpenGL REQUIRED)
 find_package(Freetype REQUIRED)
 find_package(ZLIB REQUIRED)
 find_package(JPEG REQUIRED)
@@ -11,14 +11,15 @@ set(CMAKE_CXX_STANDARD 17)
 
 set(PARENT_APP_ROOT_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
 
-add_subdirectory("lib/irrlichtmt" EXCLUDE_FROM_ALL)
+add_subdirectory("lib/irrlichtmt") # EXCLUDE_FROM_ALL)
 
 set(link_libs
-    "-framework Cocoa -framework IOKit -framework CoreFoundation"
+    # "-framework Cocoa -framework IOKit -framework CoreFoundation"
+    "-framework Cocoa -framework IOKit -framework OpenGL"
+    # ${OPENGL_LIBRARIES}
 	${ZLIB_LIBRARY}
 	${JPEG_LIBRARY}
 	${PNG_LIBRARY}
-    ${OPENGL_LIBRARIES}
     ${FREETYPE_LIBRARY}
     IrrlichtMt::IrrlichtMt
 )

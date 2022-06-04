@@ -53,7 +53,7 @@ message(STATUS "Using user-provided IrrlichtMt at subdirectory 'lib/irrlichtmt'"
 if(BUILD_CLIENT)
 	# tell IrrlichtMt to create a static library
 	set(BUILD_SHARED_LIBS OFF CACHE BOOL "Build shared library" FORCE)
-	add_subdirectory(lib/irrlichtmt EXCLUDE_FROM_ALL)
+	add_subdirectory(lib/irrlichtmt) # EXCLUDE_FROM_ALL)
 	unset(BUILD_SHARED_LIBS CACHE)
 
 	if(NOT TARGET IrrlichtMt)

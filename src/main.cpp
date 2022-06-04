@@ -133,7 +133,8 @@ int main(int argc, char *argv[])
 	debug_set_exception_handler();
 
 	g_logger.registerThread("Main");
-	g_logger.addOutputMaxLevel(&stderr_output, LL_ACTION);
+    // 初始化 log 级别
+    g_logger.addOutputMaxLevel(&stderr_output, LL_ACTION); // LL_VERBOSE);
 
 	Settings cmd_args;
 	bool cmd_args_ok = get_cmdline_opts(argc, argv, &cmd_args);
