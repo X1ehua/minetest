@@ -7,7 +7,7 @@ set(LUA_VERSION "${LUA_VERSION_MAJOR}.${LUA_VERSION_MINOR}.${LUA_VERSION_PATCH}"
 
 set(COMMON_CFLAGS)
 set(COMMON_LDFLAGS)
-set(LIBS)
+# set(LIBS)
 
 if(APPLE)
 	set(DEFAULT_POSIX TRUE)
@@ -56,4 +56,25 @@ endif()
 # COMMON_CFLAGS has no effect without this line
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${COMMON_CFLAGS}")
 
-add_subdirectory(src)
+# add_subdirectory(src)
+
+file(GLOB LUA_INC "./src/*.h")
+file(GLOB LUA_SRC "./src/*.c")
+
+# Lua library
+add_library(lua STATIC
+	${LUA_INC}
+	${LUA_SRC}
+)
+
+# target_link_libraries(lua ${LIBS})
+set_target_properties(lua PROPERTIES
+	VERSION ${LUA_VERSION}
+	CLEAN_DIRECT_OUTPUT 1
+)
+
+# Compile code as C++
+set_source_files_properties(${LUA_CORE_SRC} PROPERTIES LANGUAGE CXX)
+
+set_target_properties(lua PROPERTIES FOLDER 3rd)
+

@@ -34,14 +34,18 @@
 #endif
 
 #if defined(LUA_USE_LINUX)
-#define LUA_USE_POSIX
-#define LUA_USE_DLOPEN		/* needs an extra library: -ldl */
-#define LUA_USE_READLINE	/* needs some extra libraries */
+	#ifndef LUA_USE_POSIX
+		#define LUA_USE_POSIX
+	#endif
+	#define LUA_USE_DLOPEN		/* needs an extra library: -ldl */
+	#define LUA_USE_READLINE	/* needs some extra libraries */
 #endif
 
 #if defined(LUA_USE_MACOSX)
-#define LUA_USE_POSIX
-#define LUA_DL_DYLD		/* does not need extra library */
+	#ifndef LUA_USE_POSIX
+		#define LUA_USE_POSIX
+	#endif
+	#define LUA_DL_DYLD		/* does not need extra library */
 #endif
 
 
