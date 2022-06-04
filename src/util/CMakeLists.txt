@@ -1,4 +1,7 @@
+file(GLOB util_INCS "./*.h")
+
 set(UTIL_SRCS
+	${util_INCS}
 	${CMAKE_CURRENT_SOURCE_DIR}/areastore.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/auth.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/base64.cpp
@@ -16,4 +19,5 @@ set(UTIL_SRCS
 	${CMAKE_CURRENT_SOURCE_DIR}/srp.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/timetaker.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/png.cpp
-	PARENT_SCOPE)
+	PARENT_SCOPE
+)

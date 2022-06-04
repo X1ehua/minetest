@@ -3,7 +3,10 @@ if(ENABLE_TOUCH)
 	set(extra_gui_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/touchscreengui.cpp)
 endif()
 
+file(GLOB gui_INCS "${CMAKE_CURRENT_SOURCE_DIR}/*.h")
+
 set(gui_SRCS
+	${gui_INCS}
 	${CMAKE_CURRENT_SOURCE_DIR}/guiAnimatedImage.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/guiBackgroundImage.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/guiBox.cpp

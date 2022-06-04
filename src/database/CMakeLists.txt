@@ -1,4 +1,7 @@
+file(GLOB database_INCS "${CMAKE_CURRENT_SOURCE_DIR}/*.h")
+
 set(database_SRCS
+	${database_INCS}
 	${CMAKE_CURRENT_SOURCE_DIR}/database.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/database-dummy.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/database-files.cpp

@@ -1,8 +1,13 @@
-set(sound_SRCS  ${CMAKE_CURRENT_SOURCE_DIR}/sound.cpp)
+set(sound_SRCS
+	${CMAKE_CURRENT_SOURCE_DIR}/sound.h
+	${CMAKE_CURRENT_SOURCE_DIR}/sound.cpp
+)
 
 if(USE_SOUND)
 	set(sound_SRCS ${sound_SRCS}
-		${CMAKE_CURRENT_SOURCE_DIR}/sound_openal.cpp)
+		${CMAKE_CURRENT_SOURCE_DIR}/sound_openal.h
+		${CMAKE_CURRENT_SOURCE_DIR}/sound_openal.cpp
+	)
 	set(SOUND_INCLUDE_DIRS
 		${OPENAL_INCLUDE_DIR}
 		${VORBIS_INCLUDE_DIR}
@@ -14,7 +19,10 @@ if(USE_SOUND)
 		PARENT_SCOPE)
 endif()
 
+file(GLOB_RECURSE client_INCS "${CMAKE_CURRENT_SOURCE_DIR}/**.h")
+
 set(client_SRCS
+	${client_INCS}
 	${sound_SRCS}
 	${CMAKE_CURRENT_SOURCE_DIR}/meshgen/collector.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/render/anaglyph.cpp

@@ -1,4 +1,7 @@
+file(GLOB server_INCS "./*.h")
+
 set(server_SRCS
+	${server_INCS}
 	${CMAKE_CURRENT_SOURCE_DIR}/activeobjectmgr.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/luaentity_sao.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/mods.cpp
@@ -6,4 +9,5 @@ set(server_SRCS
 	${CMAKE_CURRENT_SOURCE_DIR}/serveractiveobject.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/serverinventorymgr.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/unit_sao.cpp
-	PARENT_SCOPE)
+	PARENT_SCOPE
+)

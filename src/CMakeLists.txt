@@ -269,11 +269,15 @@ set(common_SRCS
 	version.cpp
 	voxel.cpp
 	voxelalgorithms.cpp
-	hud.cpp
 	${common_network_SRCS}
 	${JTHREAD_SRCS}
 	${common_SCRIPT_SRCS}
 	${UTIL_SRCS}
+)
+
+file(GLOB common_INCS "*.h")
+list(REMOVE_ITEM common_INCS
+	porting_android.h
 )
 
 if(BUILD_UNITTESTS)
@@ -294,11 +298,6 @@ endif()
 if (BUILD_CLIENT)
 	add_subdirectory(client)
 endif(BUILD_CLIENT)
-
-file(GLOB client_INCS
-	"${PARENT_APP_ROOT_DIR}/src/client/*.h"
-	"${PARENT_APP_ROOT_DIR}/src/client/**/*.h"
-)
 
 set(client_SRCS
 	${client_INCS}
@@ -322,6 +321,7 @@ list(SORT client_SRCS)
 
 # Server sources
 set(server_SRCS
+	${common_INCS}
 	${common_SRCS}
 )
 list(SORT server_SRCS)
