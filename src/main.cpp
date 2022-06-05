@@ -348,6 +348,8 @@ static void set_allowed_options(OptionList *allowed_options)
 			_("Disable main menu"))));
 	allowed_options->insert(std::make_pair("console", ValueSpec(VALUETYPE_FLAG,
 		_("Starts with the console (Windows only)"))));
+    allowed_options->insert(std::make_pair("xcode", ValueSpec(VALUETYPE_FLAG,
+        _("Starts in the Xcode"))));
 #endif
 
 }

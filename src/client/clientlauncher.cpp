@@ -314,6 +314,7 @@ bool ClientLauncher::run(GameStartData &start_data, const Settings &cmd_args)
 void ClientLauncher::init_args(GameStartData &start_data, const Settings &cmd_args)
 {
 	skip_main_menu = cmd_args.getFlag("go");
+    start_data.xcode = cmd_args.getFlag("xcode");
 
 	start_data.address = g_settings->get("address");
 	if (cmd_args.exists("address")) {

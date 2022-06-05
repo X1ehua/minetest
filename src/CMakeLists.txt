@@ -330,7 +330,7 @@ list(SORT server_SRCS)
 # see issue #7074 #7075
 if (CMAKE_VERSION VERSION_GREATER 3.8.1)
 	source_group(TREE ${PROJECT_SOURCE_DIR} PREFIX "client" FILES ${client_SRCS})
-	source_group(TREE ${PROJECT_SOURCE_DIR} PREFIX "server" FILES ${server_SRCS})
+	source_group(TREE ${PROJECT_SOURCE_DIR} PREFIX "common & server" FILES ${server_SRCS})
 endif()
 
 include_directories(
@@ -590,11 +590,11 @@ if(BUILD_CLIENT)
 endif(BUILD_CLIENT)
 
 # cp bin/minetest.app/Contents/MacOS/Debug/minetest bin/minetest.app/Contents/MacOS/
-add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-	COMMAND ${CMAKE_COMMAND} -E
-	copy "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_BUILD_TYPE}/${PROJECT_NAME}"
-		 "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME}"
-)
+# add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+# 	COMMAND ${CMAKE_COMMAND} -E
+# 	copy "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_BUILD_TYPE}/${PROJECT_NAME}"
+# 		 "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME}"
+# )
 
 # if(BUILD_SERVER)
 #	install(TARGETS ${PROJECT_NAME}server DESTINATION ${BINDIR})

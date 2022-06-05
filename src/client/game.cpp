@@ -907,6 +907,10 @@ private:
 
 	bool m_does_lost_focus_pause_game = false;
 
+#ifdef _IRR_OSX_PLATFORM_
+    bool m_xcode = false;
+#endif
+
 #if IRRLICHT_VERSION_MT_REVISION < 5
 	int m_reset_HW_buffer_counter = 0;
 #endif
@@ -1027,6 +1031,7 @@ bool Game::startup(bool *kill,
 	this->input               = input;
 	this->chat_backend        = chat_backend;
 	simple_singleplayer_mode  = start_data.isSinglePlayer();
+    m_xcode                   = start_data.xcode;
 
 	input->keycache.populate();
 
@@ -2462,44 +2467,34 @@ void Game::updateCameraOrientation(CameraOrientation *cam, float dtime)
 	} else {
 #endif
 
-#define _SET_MOUSE_POS_FAIL_
-
         v2s32 center(driver->getScreenSize().Width / 2, driver->getScreenSize().Height / 2);
-#ifdef _SET_MOUSE_POS_FAIL_
+        v2s32 dist;
+
+#ifdef _IRR_OSX_PLATFORM_
         static v2s32 lastXY = v2s32(input->getMousePos().X, input->getMousePos().Y);
-        v2s32 dist = input->getMousePos() - lastXY;
-        lastXY = input->getMousePos();
+        if (m_xcode) {
+            // Xcode 中运行时，权限不够导致 setMousePos() 不生效，所以使用 lastXY 计算 distXY
+            dist = input->getMousePos() - lastXY;
+            lastXY = input->getMousePos();
+        }
+        else {
+            dist = input->getMousePos() - center;
+        }
 #else
-        v2s32 dist = input->getMousePos() - center;
+        dist = input->getMousePos() - center;
 #endif
 
 		if (m_invert_mouse || camera->getCameraMode() == CAMERA_MODE_THIRD_FRONT) {
 			dist.Y = -dist.Y;
 		}
 
-        // static int _X = 0;
-        // static int _Y = 0;
-        // if (dist.X == _X && dist.Y == _Y) {
-        //     return;
-        // }
-        // _X = dist.X, _Y = dist.Y;
-
 		f32 sens_scale = getSensitivityScaleFactor();
 		cam->camera_yaw   -= dist.X * m_cache_mouse_sensitivity * sens_scale;
 		cam->camera_pitch += dist.Y * m_cache_mouse_sensitivity * sens_scale;
-        // printf(">> camera_yaw %s #%d\n", __FILE__, __LINE__);
-        // if (dist.X || dist.Y) {
-        //     printf("Yaw %.2f Pitch %.2f, XY %d %d\n",
-        //            dist.X * m_cache_mouse_sensitivity * sens_scale,
-        //            dist.Y * m_cache_mouse_sensitivity * sens_scale,
-        //            dist.X, dist.Y);
-        // }
 
 		if (dist.X != 0 || dist.Y != 0)
         {
-// #ifndef _SET_MOUSE_POS_FAIL_
             input->setMousePos(center.X, center.Y);
-// #endif
         }
 
 #ifdef HAVE_TOUCHSCREENGUI
