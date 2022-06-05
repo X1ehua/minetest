@@ -2461,8 +2461,17 @@ void Game::updateCameraOrientation(CameraOrientation *cam, float dtime)
 		cam->camera_pitch  = g_touchscreengui->getPitch();
 	} else {
 #endif
-		v2s32 center(driver->getScreenSize().Width / 2, driver->getScreenSize().Height / 2);
-		v2s32 dist = input->getMousePos() - center;
+
+#define _SET_MOUSE_POS_FAIL_
+
+        v2s32 center(driver->getScreenSize().Width / 2, driver->getScreenSize().Height / 2);
+#ifdef _SET_MOUSE_POS_FAIL_
+        static v2s32 lastXY = v2s32(input->getMousePos().X, input->getMousePos().Y);
+        v2s32 dist = input->getMousePos() - lastXY;
+        lastXY = input->getMousePos();
+#else
+        v2s32 dist = input->getMousePos() - center;
+#endif
 
 		if (m_invert_mouse || camera->getCameraMode() == CAMERA_MODE_THIRD_FRONT) {
 			dist.Y = -dist.Y;
@@ -2487,7 +2496,12 @@ void Game::updateCameraOrientation(CameraOrientation *cam, float dtime)
         // }
 
 		if (dist.X != 0 || dist.Y != 0)
-			input->setMousePos(center.X, center.Y);
+        {
+// #ifndef _SET_MOUSE_POS_FAIL_
+            input->setMousePos(center.X, center.Y);
+// #endif
+        }
+
 #ifdef HAVE_TOUCHSCREENGUI
 	}
 #endif
@@ -2497,7 +2511,6 @@ void Game::updateCameraOrientation(CameraOrientation *cam, float dtime)
 		f32 c = m_cache_joystick_frustum_sensitivity * dtime * sens_scale;
 		cam->camera_yaw -= input->joystick.getAxisWithoutDead(JA_FRUSTUM_HORIZONTAL) * c;
 		cam->camera_pitch += input->joystick.getAxisWithoutDead(JA_FRUSTUM_VERTICAL) * c;
-        printf(">> camera_yaw %s #%d\n", __FILE__, __LINE__);
 	}
 
 	cam->camera_pitch = rangelim(cam->camera_pitch, -89.5, 89.5);
